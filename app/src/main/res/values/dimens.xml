@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_botnav_fl_pt">5dp</dimen>
+    <dimen name="main_botnav_fl_pb">5dp</dimen>
+    <dimen name="main_botnav_fl_ps">15dp</dimen>
+    <dimen name="main_botnav_fl_pe">15dp</dimen>
+    <dimen name="main_botnav_imagev_pt">5dp</dimen>
+    <dimen name="main_botnav_imagev_pb">5dp</dimen>
+    <dimen name="main_botnav_imagev_ps">10dp</dimen>
+    <dimen name="main_botnav_imagev_pe">10dp</dimen>
+
+    <dimen name="save_card_buttons_size">18sp</dimen>
+
+</resources>

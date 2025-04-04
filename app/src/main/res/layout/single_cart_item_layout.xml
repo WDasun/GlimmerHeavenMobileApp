@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp">
+
+        <RatingBar
+            android:id="@+id/rb_productrate_singlecartitem"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_productname_singlecartitem"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/img_product_singlecartitem"
+            android:rating="3" />
+
+        <ImageView
+            android:id="@+id/img_product_singlecartitem"
+            android:layout_width="146dp"
+            android:layout_height="123dp"
+            app:srcCompat="@drawable/laptopone" />
+
+        <TextView
+            android:id="@+id/txt_productname_singlecartitem"
+            android:layout_width="237dp"
+            android:layout_height="37dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="7dp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@+id/img_product_singlecartitem"
+            android:text="ASUS TUF GAMING A15 FA507NVR RYZEN 7 RTX 4060 8GB" />
+
+        <TextView
+            android:id="@+id/txt_reviews_singlecartitem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_productname_singlecartitem"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:layout_toEndOf="@+id/rb_productrate_singlecartitem"
+            android:textColor="#9D9D9D"
+            android:text="(0 Reviews)" />
+
+        <TextView
+            android:id="@+id/txt_totalprice_singlecartitem"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="72dp"
+            android:layout_toEndOf="@+id/img_product_singlecartitem"
+            android:text="LKR 75000.00"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_totalpricewithdiscount_singlecartitem"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_totalprice_singlecartitem"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="1dp"
+            android:layout_toEndOf="@+id/img_product_singlecartitem"
+            android:text="LKR 75000.00"
+            android:textColor="@color/dashOrange"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_product_singlecartitem"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/img_pluse_singlecartitem"
+                android:layout_width="33dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                app:srcCompat="@drawable/plus_button" />
+
+            <ImageView
+                android:id="@+id/img_minus_singlecartitem"
+                android:layout_width="33dp"
+                android:layout_height="36dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_toEndOf="@+id/txt_qty_singlecartitem"
+                app:srcCompat="@drawable/minus_button" />
+
+            <TextView
+                android:id="@+id/txt_qty_singlecartitem"
+                android:layout_width="64dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="0dp"
+                android:layout_toEndOf="@+id/img_pluse_singlecartitem"
+                android:gravity="center"
+                android:text="10"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_remove_singlecartitem"
+            android:layout_width="130dp"
+            android:layout_height="36dp"
+            android:layout_below="@+id/txt_totalpricewithdiscount_singlecartitem"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="17dp"
+            android:layout_toEndOf="@+id/relativeLayout"
+            android:background="@drawable/cart_item_remove_btn_border"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove"
+                android:textColor="#D75349"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <CheckBox
+            android:id="@+id/cb_select_singlecartitem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_totalprice_singlecartitem"
+            android:layout_marginStart="27dp"
+            android:layout_marginTop="30dp"
+            android:layout_toEndOf="@+id/rl_remove_singlecartitem" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="210dp"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/img_product_wishlist_item"
+            android:layout_width="match_parent"
+            android:layout_height="178dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:background="@android:color/white"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/laptopone" />
+
+        <FrameLayout
+            android:id="@+id/fram_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_below="@+id/img_product_wishlist_item"
+            android:layout_marginTop="6dp">
+            <TextView
+                android:id="@+id/txt_product_name_wishlist_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_product_wishlist_item"
+                android:text="Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                android:textSize="14sp" />
+        </FrameLayout>
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fram_product_name"
+            android:layout_marginTop="1dp"
+            android:rating="3" />
+
+        <TextView
+            android:id="@+id/txt_rating_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fram_product_name"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="1dp"
+            android:layout_toEndOf="@+id/rating_bar"
+            android:text="(0)"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/txt_price_wishlist_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_bar"
+            android:layout_marginTop="2dp"
+            android:text="459000 LKR" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:padding="2dp"
+            android:layout_below="@+id/txt_price_wishlist_item"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img_wishlist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/heart" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/cart_black" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

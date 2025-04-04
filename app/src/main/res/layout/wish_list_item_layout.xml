@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <!-- Product Image -->
+
+        <!-- Wishlist Button -->
+
+        <ImageView
+            android:id="@+id/img_product_wishlist_item"
+            android:layout_width="170dp"
+            android:layout_height="178dp"
+            android:background="@android:color/white"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/laptopone" />
+
+        <TextView
+            android:id="@+id/txt_product_name_wishlist_item"
+            android:layout_width="170dp"
+            android:layout_height="55dp"
+            android:layout_below="@+id/img_product_wishlist_item"
+            android:layout_marginTop="6dp"
+            android:text="ASUS TUF GAMING A15 FA507NVR RYZEN 7 RTX 4060 8GB" />
+
+        <TextView
+            android:id="@+id/txt_price_wishlist_item"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_product_name_wishlist_item"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="459000 LKR" />
+
+        <LinearLayout
+            android:layout_width="170dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/txt_price_wishlist_item"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:id="@+id/img_add_to_cart_wishlist_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/add_to_cart_green"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/img_remove_from_wishlist_wishlist_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/remove"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

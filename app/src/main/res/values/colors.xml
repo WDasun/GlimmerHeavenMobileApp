@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dashOrange">#fa9701</color>
+    <color name="BackButtonColor">#F0F0F0</color>
+    <color name="cat_item_ends">#FA9701</color>
+    <color name="cat_item_ende">#FDDBB4</color>
+    <color name="cat_status_changing">#FFDF14</color>
+    <color name="cat_status_default">#FFFFFF</color>
+    <color name="line_color_one">#E7E8ED</color>
+    <color name="cancel_btn">#FA8383</color>
+    <color name="InStock">#ff669900</color>
+    <color name="OutOfStock">#EB3434</color>
+    <color name="DialogButton1">#F06F6F</color>
+    <color name="DialogButton2">#97A4E6</color>
+    <color name="edit_text_background">#f6fbff</color>
+    <color name="edit_text_background_line">#fa9701</color>
+
+</resources>

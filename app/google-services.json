@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "85349124295",
+    "firebase_url": "https://glimmer-heaven-default-rtdb.firebaseio.com",
+    "project_id": "glimmer-heaven",
+    "storage_bucket": "glimmer-heaven.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85349124295:android:0226226a0c9738af24d6e2",
+        "android_client_info": {
+          "package_name": "com.example.glimmerheaven"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiOVVEiWdoe5oqK93b9nwhP6QxNYVbIL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
