@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Order {
     private long orderDate;
+    private long deliveredDate;
     private String customerId;
     private String cnt;
     private String email;
@@ -20,7 +21,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(long orderDate, String customerId, String cnt, String email, Address address, String paymentType, String shippingType, String additionalNote, String onlinePaymentDetails, List<OrderItem> orderItemList, String orderStatus,double total) {
+    public Order(long orderDate, String customerId, String cnt, String email, Address address, String paymentType, String shippingType, String additionalNote, String onlinePaymentDetails, List<OrderItem> orderItemList, String orderStatus,double total,long deliveredDate) {
         this.orderDate = orderDate;
         this.customerId = customerId;
         this.cnt = cnt;
@@ -33,6 +34,15 @@ public class Order {
         this.orderItemList = orderItemList;
         this.orderStatus = orderStatus;
         this.total = total;
+        this.deliveredDate = deliveredDate;
+    }
+
+    public long getDeliveredDate() {
+        return deliveredDate;
+    }
+
+    public void setDeliveredDate(long deliveredDate) {
+        this.deliveredDate = deliveredDate;
     }
 
     public double getTotal() {

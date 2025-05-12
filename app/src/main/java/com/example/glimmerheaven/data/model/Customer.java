@@ -3,7 +3,7 @@ package com.example.glimmerheaven.data.model;
 import java.util.ArrayList;
 
 public class Customer {
-    private String fname,lname,email,cnt;
+    private String fname,lname,email,cnt,imgUrl;
     private long birthDay;
     private long craetedDate,updatedDate;
     private boolean status;
@@ -13,13 +13,15 @@ public class Customer {
     private ArrayList<Address> address = new ArrayList<>();
     private ArrayList<Card> card = new ArrayList<>();
     private ArrayList<String> orders = new ArrayList<>();
+    private String FCMToken;
 
     public Customer() {
     }
 
     public Customer(String fname, String lname, String email, String cnt, long birthDay, long craetedDate,
                     long updatedDate, boolean status, ArrayList<CartItem> cart, ArrayList<String> wishList,
-                    String gender, ArrayList<Address> address, ArrayList<Card> card,ArrayList<String> orders) {
+                    String gender, ArrayList<Address> address, ArrayList<Card> card,ArrayList<String> orders,
+                    String FCMToken,String imgUrl) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
@@ -34,6 +36,28 @@ public class Customer {
         this.address = address;
         this.card = card;
         this.orders = orders;
+        this.FCMToken = FCMToken;
+        this.imgUrl = imgUrl;
+    }
+
+    public void setOrders(ArrayList<String> orders) {
+        this.orders = orders;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getFCMToken() {
+        return FCMToken;
+    }
+
+    public void setFCMToken(String FCMToken) {
+        this.FCMToken = FCMToken;
     }
 
     public ArrayList<String> getOrders() {

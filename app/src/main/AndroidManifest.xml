@@ -2,8 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+<!--    For lacation-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -15,6 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GlimmerHeaven"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.activities.GoogleMapActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.NotificationManage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.ViewOrderFromNotification"
+            android:exported="false" />
         <activity
             android:name=".ui.activities.ForgotPassword"
             android:exported="false" />
@@ -50,7 +68,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- [START firebase_service] -->
+        <service
+            android:name=".Firebase.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
     </application>
 
 </manifest>

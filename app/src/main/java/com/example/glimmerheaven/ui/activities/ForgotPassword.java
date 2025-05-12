@@ -44,7 +44,7 @@ public class ForgotPassword extends AppCompatActivity {
         txt_email = findViewById(R.id.txt_email_passwordrecovery);
         btn_sendRecoveryLink = findViewById(R.id.btn_send_link_passwordrecovery);
         btn_back = findViewById(R.id.btn_back_passwordrecovery);
-        cl_progress = findViewById(R.id.cl_loading_signin);
+        cl_progress = findViewById(R.id.cl_order_details_notforyou);
         cl_main = findViewById(R.id.cl_main_passwordrecovery);
 
         cl_progress.setVisibility(View.INVISIBLE);

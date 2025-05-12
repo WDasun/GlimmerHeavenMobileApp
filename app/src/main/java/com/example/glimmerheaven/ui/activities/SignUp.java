@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.example.glimmerheaven.MainActivity;
 import com.example.glimmerheaven.R;
 import com.example.glimmerheaven.data.model.Customer;
 import com.example.glimmerheaven.ui.viewmodel.SignUpViewModel;
+import com.example.glimmerheaven.utils.SharedPreferences.SPManageUID;
 import com.example.glimmerheaven.utils.callBacks.FireBaseAuthUserCallBack;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
 import com.google.android.material.button.MaterialButton;
@@ -70,6 +72,7 @@ public class SignUp extends AppCompatActivity {
 
     }
 
+
     private void createNewCustomer() {
         String email = txt_email.getText().toString();
         String password = txt_password.getText().toString();
@@ -82,7 +85,7 @@ public class SignUp extends AppCompatActivity {
                 if(currentUser != null){
                     Log.v("ats2", "New account created !");
                     String userUID = currentUser.getUid();
-                    Customer customer = new Customer(fname,lname,email,"",0,0,0,true,new ArrayList<>(),new ArrayList<>(),null, null,null,null);
+                    Customer customer = new Customer(fname,lname,email,"",0,0,0,true,new ArrayList<>(),new ArrayList<>(),null, null,null,null,null,null);
                     signUpViewModel.saveCustomer(userUID,customer, new MessageCallBack() {
                         @Override
                         public void onComplete(boolean isSuccess, String message) {

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +48,7 @@ public class SignIn extends AppCompatActivity {
         txt_forgotPassword = findViewById(R.id.txt_forgot_password_signin);
         btn_signin = findViewById(R.id.btn_signin_signin);
         cl_main = findViewById(R.id.cl_main_signin);
-        cl_loading = findViewById(R.id.cl_loading_signin);
+        cl_loading = findViewById(R.id.cl_order_details_notforyou);
 
         enableLoadingCL(false);
 

@@ -21,6 +21,10 @@ public class FirebaseAuthRepository {
         firebaseAuth.signOut();
     }
 
+    public void addAuthStateListener(FirebaseAuth.AuthStateListener listener) {
+        firebaseAuth.addAuthStateListener(listener);
+    }
+
     public FirebaseUser getCurrentUser(){
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         return currentUser;

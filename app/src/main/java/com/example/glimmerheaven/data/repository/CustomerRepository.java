@@ -3,6 +3,7 @@ package com.example.glimmerheaven.data.repository;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.glimmerheaven.data.model.Address;
 import com.example.glimmerheaven.data.model.Card;
@@ -31,18 +32,56 @@ public class CustomerRepository {
         databaseReference = FirebaseDatabase.getInstance().getReference("gm").child("customer");
     }
 
-    public void saveCustomer(String userUID, Customer customer, MessageCallBack callBack){
-        databaseReference.child(userUID).setValue(customer)
+    public void changeImageUrl(String uid, String url, MessageCallBack callBack){
+        databaseReference.child(uid).child("imgUrl").setValue(url,new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(callBack != null){
+                    if(error == null){
+                        callBack.onComplete(true, "completed");
+                    }else{
+                        callBack.onComplete(false, error.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    public void removeFCMTokenFromCustomer(String userUID, MessageCallBack callBack){
+        databaseReference.child(userUID).child("fcmtoken").setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        callBack.onComplete(true,null);
+                        if(callBack != null){
+                            callBack.onComplete(true,null);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        callBack.onComplete(false,null);
+                        if(callBack != null){
+                            callBack.onComplete(false,null);
+                        }
+                    }
+                });
+    }
+    public void saveCustomer(String userUID, Customer customer, MessageCallBack callBack){
+        databaseReference.child(userUID).setValue(customer)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        if(callBack != null){
+                            callBack.onComplete(true,null);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if(callBack != null){
+                            callBack.onComplete(false,null);
+                        }
                     }
                 });
     }

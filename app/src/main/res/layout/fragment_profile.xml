@@ -35,7 +35,7 @@
              android:layout_height="32dp"
              android:layout_marginStart="16dp"
              android:layout_marginTop="14dp"
-             android:src="@drawable/cart_black"
+             android:src="@drawable/user"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toTopOf="parent"
              app:srcCompat="@drawable/user" />
@@ -56,17 +56,22 @@
              android:layout_marginBottom="16dp">
 
              <FrameLayout
+                 android:id="@+id/profile_image_profile"
                  android:layout_width="64dp"
                  android:layout_height="64dp"
+                 android:padding="0dp"
                  android:background="@drawable/rounded_full_profile_pic">
 
-                 <ImageView
-                     android:layout_width="32dp"
-                     android:layout_height="32dp"
+                 <com.google.android.material.imageview.ShapeableImageView
+                     android:id="@+id/img_profile_profile"
+                     android:layout_width="60dp"
+                     android:layout_height="60dp"
                      android:layout_gravity="center"
                      android:contentDescription="Profile picture"
+                     android:scaleType="centerCrop"
+                     app:shapeAppearanceOverlay="@style/RoundedImageView"
                      app:srcCompat="@drawable/camera"
-                     tools:srcCompat="@drawable/camera" />
+                     tools:srcCompat="@drawable/camera"/>
              </FrameLayout>
 
              <TextView
@@ -137,6 +142,7 @@
              android:layout_marginBottom="36dp">
 
              <androidx.cardview.widget.CardView
+                 android:id="@+id/cv_nearshops_profile"
                  android:layout_width="0dp"
                  android:layout_height="72dp"
                  android:layout_weight="1"
@@ -157,6 +163,7 @@
              </androidx.cardview.widget.CardView>
 
              <androidx.cardview.widget.CardView
+                 android:id="@+id/notification_profile"
                  android:layout_width="0dp"
                  android:layout_height="72dp"
                  android:layout_weight="1"
@@ -169,11 +176,11 @@
                  <TextView
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
-                     android:text="Track Order"
-                     android:textSize="16sp"
-                     android:textColor="#333333"
                      android:layout_gravity="center"
-                     android:fontFamily="sans-serif-medium" />
+                     android:fontFamily="sans-serif-medium"
+                     android:text="Notification"
+                     android:textColor="#333333"
+                     android:textSize="16sp" />
              </androidx.cardview.widget.CardView>
          </LinearLayout>
 

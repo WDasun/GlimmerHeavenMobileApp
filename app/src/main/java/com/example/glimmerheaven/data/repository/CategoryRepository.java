@@ -3,7 +3,6 @@ package com.example.glimmerheaven.data.repository;
 import androidx.annotation.NonNull;
 
 import com.example.glimmerheaven.data.model.Category;
-import com.example.glimmerheaven.data.model.User;
 import com.example.glimmerheaven.utils.callBacks.CategoriesCallBack;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

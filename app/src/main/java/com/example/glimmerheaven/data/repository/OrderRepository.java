@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 
 import com.example.glimmerheaven.data.model.Order;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
+import com.example.glimmerheaven.utils.callBacks.ResultCallBack;
 import com.example.glimmerheaven.utils.callBacks.ResultMapCallBack;
+import com.example.glimmerheaven.utils.eventCanceller.ValueEventListnerHolder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +26,22 @@ public class OrderRepository {
     public OrderRepository() {
         databaseReference = FirebaseDatabase.getInstance().getReference("gm").child("order");
     }
+
+    public ValueEventListnerHolder searchOrderById(String orderId, ResultCallBack rcb){
+        ValueEventListener listner = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot ds) {
+                rcb.onDataComplete(ds.getKey(), ds.getValue(Order.class), true, "Success");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError de) {
+                rcb.onDataComplete(null, null, false, "failed");
+            }
+        };
+        return new ValueEventListnerHolder(databaseReference, databaseReference.child(orderId).addValueEventListener(listner));
+    }
+
 
     public void getSelectedOrdersOnce(ArrayList<String> orderIds, ResultMapCallBack callBack){
         Map<String, Order> orders = new HashMap<>();

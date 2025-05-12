@@ -1,9 +1,14 @@
 package com.example.glimmerheaven.ui.activities;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -11,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,18 +27,28 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.glimmerheaven.data.model.Customer;
+import com.example.glimmerheaven.data.repository.CustomerRepository;
+import com.example.glimmerheaven.data.repository.FirebaseAuthRepository;
+import com.example.glimmerheaven.data.repository.supabase.SupabaseImageUploader;
 import com.example.glimmerheaven.ui.viewmodel.EditProfileViewModel;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
+import com.example.glimmerheaven.utils.dialogs.SimpleAlertDialog;
 import com.example.glimmerheaven.utils.pickers.DatePickerFragment;
 import com.example.glimmerheaven.R;
+import com.example.glimmerheaven.utils.singleton.UserManage;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EditProfileActivity extends AppCompatActivity {
-    private ImageView img_back;
+    private ImageView img_back, profilPic;
     private TextInputEditText txt_dob,txt_fname,txt_lname,txt_email, txt_cnt;
     private AutoCompleteTextView actvGender;
     private Button btn_save;
@@ -41,6 +59,11 @@ public class EditProfileActivity extends AppCompatActivity {
     };
     private ArrayAdapter<String> adapterGenders;
     private EditProfileViewModel editProfileViewModel;
+
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+    private static final int REQUEST_IMAGE_CAPTURE = 100;
+    private static final int REQUEST_IMAGE_SELECT_FROM_GALLERY = 101;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +77,33 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         editProfileViewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
+        context = this;
 
-        img_back = findViewById(R.id.back_arrow_add_profile);
+        // Permission manage
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if(isGranted){
+                openCamera();
+            }else{
+
+                new SimpleAlertDialog(context,
+                        "Permission Denied Permanently",
+                        "You have permanently denied camera permission. Please enable it in app settings.",
+                        "Go to Settings",
+                        "Cancel",
+                        () -> {
+                            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(android.net.Uri.parse("package:" + context.getPackageName()));
+                            startActivity(intent);
+                        },
+                        null)
+                        .createDialog()
+                        .show();
+
+            }
+        });
+
+        profilPic = findViewById(R.id.ivProfilePicture);
+        img_back = findViewById(R.id.img_back_availableshops);
         txt_dob = findViewById(R.id.etDateOfBirth);
         txt_fname = findViewById(R.id.txt_fname_profile);
         txt_lname = findViewById(R.id.txt_lname_profile);
@@ -71,6 +119,35 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Load customer data
         setCustomerData();
+
+        profilPic.setOnClickListener(view -> {
+            new SimpleAlertDialog(context,
+                    "Select Image Source",
+                    "Select an option to upload an image:",
+                    "Gallery",
+                    "Camera",
+                    () -> {
+                        openGallery();
+                    },
+                    () ->{
+                        if (context.getPackageManager().hasSystemFeature(
+                                PackageManager.FEATURE_CAMERA_FRONT)) {
+                            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+                        } else {
+                            new SimpleAlertDialog(context,
+                                    "Not Found",
+                                    "Camera Not Available.",
+                                    "Ok",
+                                    null,
+                                    null,
+                                    null)
+                                    .createDialog()
+                                    .show();
+                        }
+                    })
+                    .createDialog()
+                    .show();
+        });
 
         btn_save.setOnClickListener(view -> {
 
@@ -171,6 +248,121 @@ public class EditProfileActivity extends AppCompatActivity {
                 actvGender.setText("Female", false);
             }
         }
+        if(checkNullOrEmptyString(customer.getImgUrl())){
+            loadProfileImage();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if(requestCode == REQUEST_IMAGE_CAPTURE){
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+                saveImageInDBAndProfileProcess(imageBitmap);
+
+            } else if (requestCode == REQUEST_IMAGE_SELECT_FROM_GALLERY && data != null && data.getData() != null) {
+                Uri imageUri = data.getData();
+                try {
+                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+                    saveImageInDBAndProfileProcess(imageBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed to load image from gallery", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void saveImageInDBAndProfileProcess(Bitmap imageBitmap){
+        new SimpleAlertDialog(context,
+                "Upload profile image",
+                "Do you want to set this image as the profile picture ?",
+                "Yes",
+                "No",
+                () -> {
+                    File file = saveBitmapToFile(imageBitmap);
+                    String uid = new FirebaseAuthRepository().getCurrentUser().getUid();
+
+                    if(file != null && uid != null){
+                        try{
+                            SupabaseImageUploader.uploadImage(file, uid, new SupabaseImageUploader.UploadCallback() {
+                                @Override
+                                public void onSuccess(String savedUrl) {
+                                    new CustomerRepository().changeImageUrl(uid, savedUrl, (status, message) -> {
+                                        runOnUiThread(() -> {
+                                            if(status){
+                                                loadProfileImage();
+                                                Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Toast.makeText(context, "Image not changed!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(String error) {
+                                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                null)
+                .createDialog()
+                .show();
+    }
+    private File saveBitmapToFile(Bitmap bitmap) {
+        File imageFile = null;
+        try {
+
+            File storageDir = context.getCacheDir();
+            imageFile = new File(storageDir, "captured_image_" + System.currentTimeMillis() + ".jpg");
+
+            // 2. Write the bitmap into the file
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos); // quality = 100 (max)
+            fos.flush();
+            fos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageFile;
+    }
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_IMAGE_SELECT_FROM_GALLERY);
+    }
+
+
+    private void loadProfileImage(){
+        UserManage.getInstance().getCurrentUser().observe(this, customer -> {
+            if(customer.getImgUrl() != null){
+                Glide.with(context)
+                        .load(UserManage.getInstance().getCurrentUser().getValue().getImgUrl())
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(profilPic);
+            }
+        });
     }
 
     private boolean checkNullOrEmptyString(String text){

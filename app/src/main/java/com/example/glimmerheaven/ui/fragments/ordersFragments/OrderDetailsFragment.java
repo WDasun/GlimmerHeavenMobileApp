@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,14 +28,13 @@ import com.example.glimmerheaven.utils.singleton.UserManage;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 public class OrderDetailsFragment extends Fragment {
 
     private FragmentManager fragmentManager;
     private ImageView backArrow;
     private OrderViewModel orderViewModel;
-    private TextView txt_status,txt_orderDate,txt_orderId,txt_paymentMethod,txt_subTotal;
+    private TextView txt_status,txt_orderDate,txt_orderId,txt_paymentMethod,txt_subTotal,txt_deliveredDate;
     private TextView txt_deliveryFee,txt_total,txt_customerName,txt_address,txt_cnt;
     private RecyclerView rcy_orderItemList;
 
@@ -56,7 +54,7 @@ public class OrderDetailsFragment extends Fragment {
         fragmentManager = getParentFragmentManager();
         orderViewModel = new ViewModelProvider(requireActivity()).get(OrderViewModel.class);
 
-        backArrow = view.findViewById(R.id.back_arrow_order_details);
+        backArrow = view.findViewById(R.id.back_arrow_order_details_notify);
         txt_status = view.findViewById(R.id.txt_status_orderdetails);
         txt_orderDate = view.findViewById(R.id.txt_orderdate_orderdetails);
         txt_orderId = view.findViewById(R.id.txt_orderid_orderdetails);
@@ -67,6 +65,7 @@ public class OrderDetailsFragment extends Fragment {
         txt_customerName = view.findViewById(R.id.txt_customername_orderdetails);
         txt_address = view.findViewById(R.id.txt_address_orderdetails);
         txt_cnt = view.findViewById(R.id.txt_cnt_orderdetails);
+        txt_deliveredDate = view.findViewById(R.id.txt_delivereddate_orderdetails);
 
         String orderId = orderViewModel.getSelectedOrderId();
         Order order = orderViewModel.getSelectedOrderAndId();
@@ -95,6 +94,12 @@ public class OrderDetailsFragment extends Fragment {
         String address = order.getAddress().getAddressLineOne()+",\n "+order.getAddress().getAddressLineTwo();
         txt_address.setText(address);
         txt_cnt.setText(order.getCnt());
+
+        if(order.getDeliveredDate() != 0L){
+            txt_deliveredDate.setText("Delivered on :"+new SimpleDateFormat("dd.MM.yyyy").format(new Date(order.getDeliveredDate())));
+        }else{
+            txt_deliveredDate.setText("Delivered on : 0000.00.00");
+        }
 
         orderViewModel.getRelatedOrders((keys, values, status, message) -> {
             ArrayList<Integer> qtyList = new ArrayList<>();

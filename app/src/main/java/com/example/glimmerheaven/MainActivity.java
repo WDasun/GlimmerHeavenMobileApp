@@ -1,18 +1,26 @@
 package com.example.glimmerheaven;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.glimmerheaven.Firebase.MyFirebaseMessagingService;
 import com.example.glimmerheaven.ui.activities.SignIn;
 import com.example.glimmerheaven.ui.fragments.cartFragments.CartFragment;
 import com.example.glimmerheaven.ui.fragments.categoryFragment.CategoryFragment;
@@ -21,7 +29,10 @@ import com.example.glimmerheaven.ui.fragments.homeFragments.HomeFragment;
 import com.example.glimmerheaven.ui.fragments.profileFragments.ProfileFragment;
 import com.example.glimmerheaven.ui.fragments.wishListFragments.WishListFragment;
 import com.example.glimmerheaven.ui.viewmodel.MainViewModel;
+import com.example.glimmerheaven.utils.Notifications.OrderNotification;
+import com.example.glimmerheaven.utils.authentication.FirebaseUserAuthentication;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
+import com.example.glimmerheaven.utils.dialogs.SimpleAlertDialog;
 import com.example.glimmerheaven.utils.singleton.UserManage;
 import com.example.glimmerheaven.utils.testHelp.TestCaseOne;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout home,wishList,cart,category,profile;
     private FrameLayout subFlHome,subFlWishList,subFlCart,subFlCategory,subFlProfile;
     private List<FrameLayout> subFlList = new ArrayList<>();
-    private MainViewModel mainViewModel;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +61,15 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        // User search
-        FirebaseUser user = mainViewModel.getCurrentUser();
-        if(user == null){
-            Intent intent = new Intent(this, SignIn.class);
-            startActivity(intent);
-            finish();
-        }else{
-            // Setting customer as current user for future use
-            UserManage.getInstance().setCurrentUser(user.getUid(), null);
-        }
+        // Permission manage
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        });
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
 
+
+        // User Authentication
+        new FirebaseUserAuthentication(this).Authenticate();
         // Initialize navigation buttons
         home = findViewById(R.id.fl_home);
         wishList = findViewById(R.id.fl_wishlist);
@@ -160,4 +167,5 @@ public class MainActivity extends AppCompatActivity {
 
         new TestCaseOne();
     }
+
 }

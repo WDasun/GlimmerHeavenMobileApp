@@ -27,11 +27,11 @@
             android:text="Order details"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/back_arrow_order_details"
+            app:layout_constraintStart_toEndOf="@+id/back_arrow_order_details_notify"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/back_arrow_order_details"
+            android:id="@+id/back_arrow_order_details_notify"
             android:layout_width="36dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
@@ -75,7 +75,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@android:color/holo_green_light"
                     android:padding="8dp"
-                    android:text="Delivered"
+                    android:text="Loading"
                     android:textColor="@android:color/white" />
 
                 <TextView
@@ -83,14 +83,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Ordered on: 23 Feb 2025"/>
-
+                    android:text="Ordered on: Loading"/>
                 <TextView
-                    android:id="@+id/tvDeliveryDate"
+                    android:id="@+id/txt_delivereddate_orderdetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Delivered on: 25 Feb 2025"/>
+                    android:text="Delivered on: Loading"/>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -117,14 +117,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Order #123456"/>
+                    android:text="Order Loading"/>
 
                 <TextView
                     android:id="@+id/txt_paymentmethod_orderdetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Payment Method: Credit Card"/>
+                    android:text="Payment Method: Loading"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -177,7 +177,7 @@
                         android:id="@+id/txt_subtotal_orderdetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$89.99"/>
+                        android:text="Loading"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -196,7 +196,7 @@
                         android:id="@+id/txt_deliveryfee_orderdetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$10.00"/>
+                        android:text="Loading"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -216,7 +216,7 @@
                         android:id="@+id/txt_total_orderdetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$99.99"
+                        android:text="Loading"
                         android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
@@ -247,21 +247,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="John Doe"/>
+                    android:text="Loading"/>
 
                 <TextView
                     android:id="@+id/txt_address_orderdetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="123 Main Street\nApt 4B\nNew York, NY 10001"/>
+                    android:text="Loading"/>
 
                 <TextView
                     android:id="@+id/txt_cnt_orderdetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="+1 (123) 456-7890"/>
+                    android:text="Loading"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
