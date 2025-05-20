@@ -85,7 +85,7 @@ public class SignUp extends AppCompatActivity {
                 if(currentUser != null){
                     Log.v("ats2", "New account created !");
                     String userUID = currentUser.getUid();
-                    Customer customer = new Customer(fname,lname,email,"",0,0,0,true,new ArrayList<>(),new ArrayList<>(),null, null,null,null,null,null);
+                    Customer customer = new Customer(fname,lname,email,"",0,0,0,true,new ArrayList<>(),new ArrayList<>(),null, null,null,null,null,null,null);
                     signUpViewModel.saveCustomer(userUID,customer, new MessageCallBack() {
                         @Override
                         public void onComplete(boolean isSuccess, String message) {

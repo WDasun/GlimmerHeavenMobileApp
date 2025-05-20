@@ -29,10 +29,19 @@ import java.util.List;
 import java.util.Map;
 
 public class CartViewModel extends ViewModel {
+    private int fragmentContainerId;
 
     private PreOrder preOrder = new PreOrder();
     private MutableLiveData<Double> totalLiveData = new MutableLiveData<>();
     public CartViewModel() {
+    }
+
+    public int getFragmentContainerId() {
+        return fragmentContainerId;
+    }
+
+    public void setFragmentContainerId(int fragmentContainerId) {
+        this.fragmentContainerId = fragmentContainerId;
     }
 
     public PreOrder getPreOrder() {
@@ -86,6 +95,7 @@ public class CartViewModel extends ViewModel {
                         totalLiveData.setValue(total);
                         preOrder.setTotal(total);
                         preOrder.setOrderItemList(orderItemList);
+                        Log.v("ats7","In Double"+totalLiveData.getValue());
                     }
                 }
             });

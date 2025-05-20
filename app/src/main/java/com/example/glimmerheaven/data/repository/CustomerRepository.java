@@ -11,6 +11,7 @@ import com.example.glimmerheaven.data.model.CartItem;
 import com.example.glimmerheaven.data.model.Customer;
 import com.example.glimmerheaven.utils.callBacks.CustomerCallBack;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
+import com.example.glimmerheaven.utils.callBacks.ResultCallBack;
 import com.example.glimmerheaven.utils.callBacks.WishListCallBack;
 import com.example.glimmerheaven.utils.eventCanceller.ValueEventListnerHolder;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -126,9 +127,25 @@ public class CustomerRepository {
     }
 
     // Wishlist
-    public void updateWishList(String customerUid, ArrayList<String> wishList){
+    public void updateWishList(String customerUid, ArrayList<String> wishList, MessageCallBack callBack){
         DatabaseReference newRef = databaseReference.child(customerUid).child("wishList");
-        newRef.setValue(wishList);
+        newRef.setValue(wishList)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if(callBack != null){
+                    callBack.onComplete(true,"Success");
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if(callBack != null){
+                            callBack.onComplete(false, e.getMessage());
+                        }
+                    }
+                });
     }
 
     // Address

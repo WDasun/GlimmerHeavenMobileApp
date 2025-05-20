@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="invisible">
 
 
         <LinearLayout
@@ -98,27 +98,27 @@
                     <!-- Card Type Selector -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilCardType"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:layout_marginBottom="12dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                        android:layout_marginBottom="12dp">
 
                         <AutoCompleteTextView
                             android:id="@+id/atext_cardtype_cartpayemt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:hint="Card Type" />
+                            android:hint="Card Type"
+                            android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Card Number -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilCardNumber"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -133,10 +133,10 @@
                     <!-- Card Holder Name -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilCardHolder"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -162,11 +162,11 @@
 
                         <!-- Expire day -->
                         <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="2dp"
-                            android:layout_weight="1"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                            android:layout_weight="1">
 
                             <AutoCompleteTextView
                                 android:id="@+id/atxt_month_cartpayment"
@@ -177,11 +177,11 @@
                         </com.google.android.material.textfield.TextInputLayout>
                         <!-- Expire Year -->
                         <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
                             android:layout_weight="1"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:errorEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -194,12 +194,13 @@
                                 android:maxLines="1" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_weight="1"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -247,7 +248,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         android:visibility="visible"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/lyt_cart_payment_method"
@@ -442,7 +443,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="278dp"
                     android:layout_marginTop="18dp"
-                    android:text="Rs. 10500.0"
+                    android:text="Rs. 0.0"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -454,7 +455,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="277dp"
                     android:layout_marginTop="66dp"
-                    android:text="Rs. 10500.0"
+                    android:text="Rs. 0.0"
                     android:textColor="@color/dashOrange"
                     android:textSize="16sp"
                     android:textStyle="bold" />

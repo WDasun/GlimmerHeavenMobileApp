@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.example.glimmerheaven.R;
 import com.example.glimmerheaven.ui.viewmodel.ProductListViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProductFilterDialog extends DialogFragment {
@@ -28,6 +30,7 @@ public class ProductFilterDialog extends DialogFragment {
     private LinearLayout lyt_optionContainer;
     private ProductListViewModel productListViewModel;
     private ArrayList<View> options;
+    private String categoryId;
 
     public ProductFilterDialog() {
         super(R.layout.filter_layout);
@@ -44,43 +47,67 @@ public class ProductFilterDialog extends DialogFragment {
         lyt_optionContainer = view.findViewById(R.id.linearlayout_filter);
         productListViewModel = new ViewModelProvider(requireParentFragment()).get(ProductListViewModel.class);
 
-        productListViewModel.getVariationsAndValuesList().observe(this, new Observer<Map<String, ArrayList<String>>>() {
-            // Load variations and values in the start
-            @Override
-            public void onChanged(Map<String, ArrayList<String>> stringArrayListMap) {
-                options = new ArrayList<>();
-                for(String varName : new ArrayList<>(stringArrayListMap.keySet())){
-                    View filterOptionView = LayoutInflater.from(view.getContext()).inflate(R.layout.filter_option_layout, null);
-                    TextView variationName = filterOptionView.findViewById(R.id.txt_variation_name_filter);
-                    Spinner spinner = filterOptionView.findViewById(R.id.spinner_variation_values_filter);
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            categoryId = bundle.getString("categoryId");
+        }
 
-                    variationName.setText(varName);
-                    ArrayList<String> valueListForSpinner = new ArrayList<>();
-                    valueListForSpinner.add("none");
-                    for(String value : stringArrayListMap.get(varName)){
-                        valueListForSpinner.add(value);
+        if(categoryId != null){
+            productListViewModel.getVariationsLiveData(categoryId).observe(this, new Observer<Map<String, ArrayList<String>>>() {
+                // Load variations and values in the start
+                @Override
+                public void onChanged(Map<String, ArrayList<String>> stringArrayListMap) {
+                    Map<String,String> previouslySelectedVariations = null;
+                    if(productListViewModel.getPreviouslySelectedVariations() != null){
+                        previouslySelectedVariations = productListViewModel.getPreviouslySelectedVariations();
+                    }else{
+                        previouslySelectedVariations = null;
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, valueListForSpinner);
-                    spinner.setAdapter(adapter);
+                    options = new ArrayList<>();
+                    for(String varName : new ArrayList<>(stringArrayListMap.keySet())){
+                        View filterOptionView = LayoutInflater.from(view.getContext()).inflate(R.layout.filter_option_layout, null);
+                        TextView variationName = filterOptionView.findViewById(R.id.txt_variation_name_filter);
+                        Spinner spinner = filterOptionView.findViewById(R.id.spinner_variation_values_filter);
 
-                    options.add(filterOptionView);
-                    lyt_optionContainer.addView(filterOptionView);
+                        variationName.setText(varName);
+                        ArrayList<String> valueListForSpinner = new ArrayList<>();
+                        valueListForSpinner.add("none");
+                        for(String value : stringArrayListMap.get(varName)){
+                            valueListForSpinner.add(value);
+                        }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, valueListForSpinner);
+                        spinner.setAdapter(adapter);
+                        if(previouslySelectedVariations != null){
+                            if(previouslySelectedVariations.containsKey(varName)){
+                                int i = valueListForSpinner.indexOf(previouslySelectedVariations.get(varName));
+                                spinner.setSelection(i);
+                            }
+                        }
+                        options.add(filterOptionView);
+                        lyt_optionContainer.addView(filterOptionView);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         txt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> selectedValues = new ArrayList<>();
+                Map<String,String> optionVariations = null;
                 for(View v : options){
+                    TextView variationName = v.findViewById(R.id.txt_variation_name_filter);
                     Spinner spinner = v.findViewById(R.id.spinner_variation_values_filter);
                     String selectedValue = spinner.getSelectedItem().toString();
                     if(!selectedValue.equals("none")){
-                        selectedValues.add(selectedValue);
+                        if(optionVariations != null){
+                            optionVariations.put(variationName.getText().toString(),selectedValue);
+                        }else{
+                            optionVariations = new HashMap<>();
+                            optionVariations.put(variationName.getText().toString(),selectedValue);
+                        }
                     }
                 }
-                productListViewModel.filterData(selectedValues);
+                productListViewModel.getFilteredProductsLiveData(categoryId,optionVariations,getViewLifecycleOwner());
                 dismiss();
             }
         });
@@ -88,7 +115,12 @@ public class ProductFilterDialog extends DialogFragment {
         txt_showAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                productListViewModel.showAll();
+                if(categoryId != null && !categoryId.equals("")){
+                    productListViewModel.getFilteredProductsLiveData(categoryId, null,getViewLifecycleOwner());
+                }else{
+                    Log.v("myLog", "Category Id is null or emty");
+                    Toast.makeText(getContext(),"Category Id is empty or null", Toast.LENGTH_SHORT).show();
+                }
                 dismiss();
             }
         });

@@ -40,6 +40,8 @@ import com.example.glimmerheaven.ui.activities.GoogleMapActivity;
 import com.example.glimmerheaven.ui.activities.NotificationManage;
 import com.example.glimmerheaven.ui.activities.OrdersActivity;
 import com.example.glimmerheaven.R;
+import com.example.glimmerheaven.ui.activities.ProductActivity;
+import com.example.glimmerheaven.ui.activities.ReviewsActivity;
 import com.example.glimmerheaven.ui.activities.SaveCardsActivity;
 import com.example.glimmerheaven.ui.activities.SavedAddressesActivity;
 import com.example.glimmerheaven.ui.activities.SignIn;
@@ -63,7 +65,7 @@ public class ProfileFragment extends Fragment {
     private ProfileFragmentViewModel profileFragmentViewModel;
     private ShapeableImageView img_profile;
     private FrameLayout subFl, fl_profileImage;
-    private LinearLayout lrl_editProfile, lrl_saveCardsProfile, lrl_logout, lrl_savedAddress;
+    private LinearLayout lrl_editProfile, lrl_saveCardsProfile, lrl_logout, lrl_savedAddress, ll_reviews;
     private CardView card_yourOrder, card_wishList, card_notification, card_nearShops;
     private TextView txt_customerName;
     private Context context;
@@ -119,11 +121,17 @@ public class ProfileFragment extends Fragment {
         lrl_saveCardsProfile = view.findViewById(R.id.lrl_save_cards_profile);
         lrl_logout = view.findViewById(R.id.lyt_exit_profile);
         lrl_savedAddress = view.findViewById(R.id.lrl_savedaddress_profile);
+        ll_reviews = view.findViewById(R.id.ll_reviews_profile);
         txt_customerName = view.findViewById(R.id.txt_customer_name_profile);
         fl_profileImage = view.findViewById(R.id.profile_image_profile);
         img_profile = view.findViewById(R.id.img_profile_profile);
 
         loadProfileImage();
+
+        ll_reviews.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), ReviewsActivity.class);
+            startActivity(intent);
+        });
 
         card_nearShops.setOnClickListener(view1 -> {
             startActivity(new Intent(context, GoogleMapActivity.class));

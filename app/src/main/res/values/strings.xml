@@ -3,4 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_near_shops">Available Shops</string>
+    <!--    Default-->
+    <string name="def_cancel">Cancel</string>
+    <!--    Buy now dialog-->
+    <string name="title_buynowproduct_dialog">Select QTY</string>
+    <string name="btn_buynow_buynowproduct_dialog">Buy now</string>
 </resources>

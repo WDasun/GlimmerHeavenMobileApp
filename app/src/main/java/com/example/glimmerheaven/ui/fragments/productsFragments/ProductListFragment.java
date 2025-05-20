@@ -28,16 +28,17 @@ import java.util.Map;
 
 public class ProductListFragment extends Fragment {
     private ConstraintLayout lyt_search;
-    private String categoryId, catName, catImage;
+    private String categoryId, catName, catImage, brand;
     private ImageView img_productlistIcon, img_back, img_filter;
     private TextView txt_categoryName;
     private RecyclerView recyclerView;
     private ProductListViewModel productListViewModel;
-    public ProductListFragment(String categoryId, String catName, String catImage) {
+    public ProductListFragment(String categoryId, String catName, String catImage, String brand) {
         super(R.layout.fragment_product_list);
         this.categoryId = categoryId;
         this.catName = catName;
         this.catImage = catImage;
+        this.brand = brand;
     }
 
     @Override
@@ -55,6 +56,9 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ProductFilterDialog productFilterDialog = new ProductFilterDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryId",categoryId);
+                productFilterDialog.setArguments(bundle);
                 productFilterDialog.show(getChildFragmentManager(), "");
             }
         });
@@ -72,12 +76,20 @@ public class ProductListFragment extends Fragment {
         // Set top Category name
         txt_categoryName.setText(catName);
 
+        Map<String,String> optionVariations = null;
+
+        if(brand != null){
+            optionVariations.put("Brand",brand);
+        }else{
+            optionVariations = null;
+        }
+
         productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
-        productListViewModel.setCategoryId(categoryId);
-        productListViewModel.getProductList().observe(getViewLifecycleOwner(), new Observer<Map<String, Product>>() {
-            @Override
-            public void onChanged(Map<String, Product> productMap) {
-                recyclerView = view.findViewById(R.id.recycler_view_product_list);
+        if(productListViewModel.getPreviouslySelectedVariations() != null){
+            optionVariations = productListViewModel.getPreviouslySelectedVariations();
+        }
+        productListViewModel.getFilteredProductsLiveData(categoryId, optionVariations, this).observe(getViewLifecycleOwner(), productMap -> {
+            recyclerView = view.findViewById(R.id.recycler_view_product_list);
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(),2);
                 ProductListAdapter productListAdapter = new ProductListAdapter(productMap, new ProductListAdapter.OnProductItemClickListner() {
                     @Override
@@ -94,7 +106,6 @@ public class ProductListFragment extends Fragment {
                 });
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(productListAdapter);
-            }
         });
 
         lyt_search.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +120,5 @@ public class ProductListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.v("ats", "Product List : onPause");
     }
 }

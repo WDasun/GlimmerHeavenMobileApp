@@ -30,11 +30,11 @@
             android:text="Product View"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/img_productlist_icon"
+            app:layout_constraintStart_toEndOf="@+id/img_back_productview"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/img_productlist_icon"
+            android:id="@+id/img_back_productview"
             android:layout_width="36dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView11"
+            android:id="@+id/img_addtowishlist_productview"
             android:layout_width="52dp"
             android:layout_height="32dp"
             android:layout_marginTop="16dp"
@@ -121,11 +121,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp">
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
                         <RatingBar
-                            android:id="@+id/rating_bar2"
+                            android:id="@+id/rb_rate_productview"
                             style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -134,18 +134,19 @@
                             android:layout_marginStart="0dp"
 
                             android:numStars="5"
-                            android:rating="3"
+                            android:rating="0"
                             tools:layout_editor_absoluteX="1dp"
                             tools:layout_editor_absoluteY="1dp" />
 
                         <TextView
+                            android:id="@+id/txt_review_productview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_marginStart="4dp"
 
-                            android:layout_toEndOf="@+id/rating_bar2"
-                            android:text="(5 Reviews)"
+                            android:layout_toEndOf="@+id/rb_rate_productview"
+                            android:text="---"
                             android:textColor="@android:color/holo_orange_dark"
                             android:textSize="12sp" />
                     </RelativeLayout>
@@ -160,8 +161,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp">
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
                         <TextView
                             android:id="@+id/txt_stock_status_productview"
@@ -182,6 +183,33 @@
                             android:layout_alignParentTop="true"
                             android:text="LKR 75000.00"
                             android:textSize="20sp" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+<!--                Discount text-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_discount_productview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/txt_discountprice_productview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:text="LKR 000000.00"
+                            android:textColor="@color/dashOrange"
+                            android:textSize="16sp" />
 
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
@@ -222,6 +250,7 @@
                     android:layout_marginTop="2dp">
 
                     <LinearLayout
+                        android:id="@+id/lly_other_productview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -238,12 +267,6 @@
                             android:textSize="15sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/txt_other"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Ram : 12 GB "
-                            android:textSize="12sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -277,6 +300,7 @@
         android:layout_marginBottom="0dp">
 
         <TextView
+            android:id="@+id/txt_addtocart_productview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Add to Cart"
@@ -290,6 +314,7 @@
 
 
         <TextView
+            android:id="@+id/txt_buynow_productview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Buy Now"

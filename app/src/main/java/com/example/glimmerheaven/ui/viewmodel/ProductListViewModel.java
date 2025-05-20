@@ -2,6 +2,8 @@ package com.example.glimmerheaven.ui.viewmodel;
 
 import android.util.Log;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,99 +16,88 @@ import com.example.glimmerheaven.utils.callBacks.VariationsAndValuesCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProductListViewModel extends ViewModel {
-
-    private String categoryId;
-    private ProductRepository productRepository;
     private MutableLiveData<Map<String, Product>> productsLiveData = new MutableLiveData<>();
-    private MutableLiveData<Map<String, ArrayList<String>>> variationsAndValuesLiveData = new MutableLiveData<>();
-    private Map<String, Product> productsBackup;
+    private MutableLiveData<Map<String, Product>> filteredProductsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Map<String, ArrayList<String>>> variationsLiveData = new MutableLiveData<>();
+    private Map<String,String> previouslySelectedVariations = null;
     public ProductListViewModel() {
-        productRepository = new ProductRepository();
+
     }
 
-    public LiveData<Map<String, ArrayList<String>>> getVariationsAndValuesList(){
-        // Use to return fetched Variations and values
+    public Map<String, String> getPreviouslySelectedVariations() {
+        return previouslySelectedVariations;
+    }
 
-        if(variationsAndValuesLiveData.getValue() == null && categoryId != null){
-            loadVariationsAndValues(categoryId);
+    public LiveData<Map<String, ArrayList<String>>> getVariationsLiveData(String categoryId){
+        if(variationsLiveData.getValue() == null){
+            loadVariations(categoryId);
         }
-        return variationsAndValuesLiveData;
-    }
 
-    private void loadVariationsAndValues(String catId) {
-        // fetched Variations and values
-        new VariationAndValuesRepository().searchAllVariationsAndValues(catId, new VariationsAndValuesCallBack() {
-            @Override
-            public void onDataComplete(Map<String, ArrayList<String>> variationsAndValues) {
-                Log.v("at2", "v&v fetch called !");
-                variationsAndValuesLiveData.setValue(variationsAndValues);
+        return variationsLiveData;
+    }
+    private void loadVariations(String categoryId){
+        new VariationAndValuesRepository().searchAllVariationsAndValues(categoryId, variationsAndValues -> {
+            if(variationsAndValues != null){
+                variationsLiveData.setValue(variationsAndValues);
             }
         });
     }
+    public LiveData<Map<String, Product>> getFilteredProductsLiveData(String categoryId, Map<String,String> optionVariations, LifecycleOwner lifecycleOwner){
 
-    public void showAll(){
-        if(productsBackup != null){
-            productsLiveData.setValue(new HashMap<>(productsBackup));
-            productsBackup = null;
+        if(productsLiveData.getValue() == null){
+            loadCategoryRelatedProducts(categoryId);
         }
+        productsLiveData.observe(lifecycleOwner, productMap -> {
+            previouslySelectedVariations = optionVariations;
+            if(optionVariations != null){
+                filter(optionVariations);
+            }else{
+                filteredProductsLiveData.setValue(productsLiveData.getValue());
+            }
+        });
+        return filteredProductsLiveData;
     }
 
-    public void filterData(ArrayList<String> variationValues){
-        // Remove Product from "productsLiveData" that dont have given variation values
-        Map<String, Product> products;
-        if(productsBackup == null){
-            Log.v("at2", "in true");
-            products = productsLiveData.getValue();
-            productsBackup = new HashMap<>(products);
-        }else{
-            Log.v("at2", "in false");
-            products = new HashMap<>(productsBackup);
-        }
+    private void loadCategoryRelatedProducts(String categoryId){
+        new ProductRepository().searchAllProductsInCategory(categoryId, new ProductsCallBack() {
+            @Override
+            public void onDataComplete(Map<String, Product> productsMap) {
+                productsLiveData.setValue(productsMap);
+            }
+        });
 
-        for(String productId : new ArrayList<>(products.keySet())){
-            Map<String, String> productVariations = products.get(productId).getVariationsOptions();
-            for(String value : variationValues){
-                boolean contained = productVariations.containsValue(value);
-                if(!contained){
-                    products.remove(productId);
-                    break;
+    }
+    private void filter(Map<String,String> optionVariations){
+        if(optionVariations != null){
+            Map<String, Product> currentProducts = productsLiveData.getValue();
+            Map<String, Product> newFilteredProducts = new HashMap<>();
+            for(String pid : currentProducts.keySet()){
+                boolean satisfied = false;
+                Product product = currentProducts.get(pid);
+                for(String optionVariation : optionVariations.keySet()){
+                    if(product.getVariationsOptions().containsKey(optionVariation)){
+                        String optionVariationValue = optionVariations.get(optionVariation);
+                        String productVariationValue = product.getVariationsOptions().get(optionVariation);
+                        if(optionVariationValue.equals(productVariationValue)){
+                            satisfied = true;
+                        }else{
+                            satisfied = false;
+                            break;
+                        }
+                    }else{
+                        satisfied = false;
+                        break;
+                    }
+                }
+                if(satisfied){
+                    newFilteredProducts.put(pid,product);
                 }
             }
+            filteredProductsLiveData.setValue(newFilteredProducts);
         }
-        productsLiveData.setValue(products);
-    }
-
-    //
-    public LiveData<Map<String, Product>> getProductList(){
-        // Use to return fetched product
-
-        if(productsLiveData.getValue() == null && categoryId != null){
-            loadProducts(categoryId);
-        }
-        return productsLiveData;
-    }
-
-    private void loadProducts(String catId) {
-        // fetched product
-
-        productRepository.searchAllProductsInCategory(catId, new ProductsCallBack() {
-            @Override
-            public void onDataComplete(Map<String, Product> productMap) {
-                Log.v("at2", "p fetch called !");
-                productsLiveData.setValue(productMap);
-            }
-        });
-    }
-
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
     }
 }

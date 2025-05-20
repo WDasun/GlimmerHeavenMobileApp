@@ -1,6 +1,8 @@
 package com.example.glimmerheaven.data.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Customer {
     private String fname,lname,email,cnt,imgUrl;
@@ -13,6 +15,7 @@ public class Customer {
     private ArrayList<Address> address = new ArrayList<>();
     private ArrayList<Card> card = new ArrayList<>();
     private ArrayList<String> orders = new ArrayList<>();
+    private Map<String, CommentAndRating> ratedProducts = new HashMap<>();
     private String FCMToken;
 
     public Customer() {
@@ -21,7 +24,7 @@ public class Customer {
     public Customer(String fname, String lname, String email, String cnt, long birthDay, long craetedDate,
                     long updatedDate, boolean status, ArrayList<CartItem> cart, ArrayList<String> wishList,
                     String gender, ArrayList<Address> address, ArrayList<Card> card,ArrayList<String> orders,
-                    String FCMToken,String imgUrl) {
+                    String FCMToken,String imgUrl,Map<String, CommentAndRating> ratedProducts) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
@@ -38,6 +41,15 @@ public class Customer {
         this.orders = orders;
         this.FCMToken = FCMToken;
         this.imgUrl = imgUrl;
+        this.ratedProducts = ratedProducts;
+    }
+
+    public Map<String, CommentAndRating> getRatedProducts() {
+        return ratedProducts;
+    }
+
+    public void setRatedProducts(Map<String, CommentAndRating> ratedProducts) {
+        this.ratedProducts = ratedProducts;
     }
 
     public void setOrders(ArrayList<String> orders) {

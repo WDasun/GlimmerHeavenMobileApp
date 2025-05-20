@@ -1,6 +1,7 @@
 package com.example.glimmerheaven.ui.fragments.cartFragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,6 +47,11 @@ public class CartPaymentFragment extends Fragment {
             "01", "02", "03", "04", "05", "06",
             "07", "08", "09", "10", "11", "12"
     };
+    private Fragment fragment;
+
+    public CartPaymentFragment() {
+        super(R.layout.fragment_cart_payment);
+    }
 
     public CartPaymentFragment(TextView textLineToAddress, ImageView img_stepThree) {
         super(R.layout.fragment_cart_payment);
@@ -57,8 +63,14 @@ public class CartPaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fragment = getParentFragment();
         subFragmentManager = getParentFragmentManager();
-        cartViewModel = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        if(fragment != null){
+            cartViewModel = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        }else{
+            cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
+        }
+
 
         rl_paymentMethod = view.findViewById(R.id.rl_payment_method);
         rl_addCard = view.findViewById(R.id.rl_add_card);
@@ -77,15 +89,20 @@ public class CartPaymentFragment extends Fragment {
         atxt_cardType = view.findViewById(R.id.atext_cardtype_cartpayemt);
         spinner_cardList = view.findViewById(R.id.spinner_cards_cartpayments);
 
-        img_stepThree.setBackgroundResource(R.drawable.full_round_cart_nav_number_pass);
-        textLineToPayment.setTextColor(view.getResources().getColor(R.color.cat_status_changing));
+        if(textLineToPayment != null){
+            img_stepThree.setBackgroundResource(R.drawable.full_round_cart_nav_number_pass);
+            textLineToPayment.setTextColor(view.getResources().getColor(R.color.cat_status_changing));
+        }
 
         atxt_cardType.setAdapter(new ArrayAdapter<>(view.getContext(), com.google.android.material.R.layout.support_simple_spinner_dropdown_item, cardTypes));
         atxt_expMonth.setAdapter(new ArrayAdapter<>(view.getContext(), com.google.android.material.R.layout.support_simple_spinner_dropdown_item, months));
         rl_addCard.setVisibility(View.GONE);
 
+        int size = cartViewModel.getPreOrder().getSelectedCartItemList().size();
+        Log.v("ats7","Before size : "+size);
         // Setting totals
         cartViewModel.getTotalLiveData().observe(getViewLifecycleOwner(), aDouble -> {
+            Log.v("ats7","Double"+aDouble);
             txt_subTotal.setText("Rs. "+aDouble);
             txt_total.setText("Rs. "+aDouble);
         });
@@ -94,7 +111,7 @@ public class CartPaymentFragment extends Fragment {
         card_payOnDelivery.setOnClickListener(view1 -> {
             cartViewModel.getPreOrder().setPaymentType("PayOnDelivery");
             subFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_cart, CheckoutFragment.class, null)
+                    .replace(cartViewModel.getFragmentContainerId(), CheckoutFragment.class, null)
                     .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit();
@@ -137,7 +154,7 @@ public class CartPaymentFragment extends Fragment {
                         cartViewModel.getPreOrder().getEnteredCard().setCvv(Integer.parseInt(cvv));
 
                         subFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container_cart, CheckoutFragment.class, null)
+                                .replace(cartViewModel.getFragmentContainerId(), CheckoutFragment.class, null)
                                 .setReorderingAllowed(true)
                                 .addToBackStack(null)
                                 .commit();
@@ -193,7 +210,9 @@ public class CartPaymentFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        img_stepThree.setBackgroundResource(R.drawable.full_round_cart_nav_number);
-        textLineToPayment.setTextColor(getResources().getColor(R.color.cat_status_default));
+        if(textLineToPayment != null){
+            img_stepThree.setBackgroundResource(R.drawable.full_round_cart_nav_number);
+            textLineToPayment.setTextColor(getResources().getColor(R.color.cat_status_default));
+        }
     }
 }

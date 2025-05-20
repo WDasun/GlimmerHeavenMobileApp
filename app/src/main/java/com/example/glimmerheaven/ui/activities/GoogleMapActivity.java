@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.glimmerheaven.BuildConfig;
 import com.example.glimmerheaven.R;
 import com.example.glimmerheaven.data.model.Shop;
+import com.example.glimmerheaven.data.repository.ShopRepository;
 import com.example.glimmerheaven.utils.dialogs.SimpleAlertDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -110,70 +111,51 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         myMap = googleMap;
 
-        ArrayList<Shop> shopList = new ArrayList<>();
+        new ShopRepository().getAllShops((keys, values, status, message) -> {
+            if(status){
+                ArrayList<Shop> shopList = (ArrayList<Shop>) values;
+                LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                MarkerOptions option = new MarkerOptions().position(myLocation).title("My Location");
+                option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                myMap.addMarker(option);
 
-        Shop shop1 = new Shop();
-        shop1.setShopName("AAAAA");
-        shop1.setAddressLineOne("asdas/A");
-        shop1.setAddressLineTwo("asdas asft3");
-        shop1.setEmail("jhsdkajsd@gmail.com");
-        shop1.setContactNumber("0332233248");
-        shop1.setLatitude(7.092761);
-        shop1.setLongitude(80.006922);
-
-        Shop shop2 = new Shop();
-        shop2.setShopName("BBBBB");
-        shop2.setAddressLineOne("asdaccc/B");
-        shop2.setAddressLineTwo("www ffff");
-        shop2.setEmail("4r3r34f@gmail.com");
-        shop2.setContactNumber("0332233248");
-        shop2.setLatitude(7.092745);
-        shop2.setLongitude(80.002319);
-
-        shopList.add(shop1);
-        shopList.add(shop2);
-
-
-
-        LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        MarkerOptions option = new MarkerOptions().position(myLocation).title("My Location");
-        option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        myMap.addMarker(option);
-
-        for(Shop shop : shopList){
-            LatLng latLng = new LatLng(shop.getLatitude(), shop.getLongitude());
-            myMap.addMarker(new MarkerOptions().position(latLng).title(shop.getShopName()));
-        }
-
-        myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
-
-        myMap.setOnMarkerClickListener(marker -> {
-
-            String title = marker.getTitle();
-
-            for(Shop shop : shopList){
-                if(title.equals(shop.getShopName())){
-                    LatLng destinationShop = new LatLng(shop.getLatitude(), shop.getLongitude());
-                    drawRoute(myLocation, destinationShop);
-                    new SimpleAlertDialog(this,
-                            shop.getShopName(),
-                            "Address : "+shop.getAddressLineOne()+" "+shop.getAddressLineTwo()+"\n\n"
-                                    +"Contact : "+shop.getContactNumber()+"\n\n"
-                                    +"Email : "+shop.getEmail()+"\n\n",
-                            "Call now",
-                            "close",
-                            () -> {
-                                Intent intent = new Intent(Intent.ACTION_DIAL);
-                                intent.setData(Uri.parse("tel:" + shop.getContactNumber()));
-                                startActivity(intent);
-                            },
-                            null)
-                            .createDialog().show();
-                    break;
+                for(Shop shop : shopList){
+                    LatLng latLng = new LatLng(shop.getLatitude(), shop.getLongitude());
+                    myMap.addMarker(new MarkerOptions().position(latLng).title(shop.getShopName()));
                 }
+
+                myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
+
+                myMap.setOnMarkerClickListener(marker -> {
+
+                    String title = marker.getTitle();
+
+                    for(Shop shop : shopList){
+                        if(title.equals(shop.getShopName())){
+                            LatLng destinationShop = new LatLng(shop.getLatitude(), shop.getLongitude());
+                            drawRoute(myLocation, destinationShop);
+                            new SimpleAlertDialog(this,
+                                    shop.getShopName(),
+                                    "Address : "+shop.getAddressLineOne()+" "+shop.getAddressLineTwo()+"\n\n"
+                                            +"Contact : "+shop.getContactNumber()+"\n\n"
+                                            +"Email : "+shop.getEmail()+"\n\n",
+                                    "Call now",
+                                    "close",
+                                    () -> {
+                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                        intent.setData(Uri.parse("tel:" + shop.getContactNumber()));
+                                        startActivity(intent);
+                                    },
+                                    null)
+                                    .createDialog().show();
+                            break;
+                        }
+                    }
+                    return false;
+                });
             }
-            return false;
         });
+
     }
 
     private void drawRoute(LatLng origin, LatLng destination) {

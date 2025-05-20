@@ -2,10 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="@color/comment">
 
     <TextView
-        android:id="@+id/txt_name"
+        android:id="@+id/txt_name_scl"
         android:layout_width="393dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -19,22 +21,22 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/txt_commented_date"
+        android:id="@+id/txt_commented_date_scl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_name"
+        android:layout_below="@+id/txt_name_scl"
         android:layout_marginStart="19dp"
         android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/rating_bar2"
+        android:layout_toEndOf="@+id/rb_rate_scl"
         android:text="2025/02/12"
         android:textSize="10sp" />
 
     <RatingBar
-        android:id="@+id/rating_bar2"
+        android:id="@+id/rb_rate_scl"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_name"
+        android:layout_below="@+id/txt_name_scl"
         android:layout_alignParentStart="true"
         android:layout_marginStart="7dp"
         android:layout_marginTop="3dp"
@@ -44,10 +46,10 @@
         tools:layout_editor_absoluteY="1dp" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/txt_comment_scl"
         android:layout_width="370dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rating_bar2"
+        android:layout_below="@+id/rb_rate_scl"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="31dp"

@@ -29,6 +29,7 @@ public class CheckoutFragment extends Fragment {
     private TextView txt_price,txt_discount,txt_deliveryCharge,txt_total,txt_submitOrder, txt_cnt;
     private ConstraintLayout cl_main,cl_complete;
     private Button btn_backToCart;
+    private Fragment fragment;
 
     public CheckoutFragment() {
         super(R.layout.fragment_cart_checkout);
@@ -40,7 +41,12 @@ public class CheckoutFragment extends Fragment {
 
         img_checkoutBack = view.findViewById(R.id.img_checkout_back);
         fragmentManager = getParentFragmentManager();
-        cvm = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        fragment = getParentFragment();
+        if(fragment != null){
+            cvm = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        }else{
+            cvm = new ViewModelProvider(getActivity()).get(CartViewModel.class);
+        }
 
         txt_address = view.findViewById(R.id.txt_deliveryaddress_checkout);
         txt_paymentMethod = view.findViewById(R.id.txt_paymentmethod_checkout);

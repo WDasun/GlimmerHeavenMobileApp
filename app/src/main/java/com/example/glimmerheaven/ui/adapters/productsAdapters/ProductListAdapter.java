@@ -1,6 +1,7 @@
 package com.example.glimmerheaven.ui.adapters.productsAdapters;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.glimmerheaven.data.model.CartItem;
+import com.example.glimmerheaven.data.model.CommentAndRating;
+import com.example.glimmerheaven.data.model.Discount;
 import com.example.glimmerheaven.data.model.Product;
 import com.example.glimmerheaven.R;
+import com.example.glimmerheaven.data.repository.CommentAndRatingRepository;
 import com.example.glimmerheaven.data.repository.CustomerRepository;
 import com.example.glimmerheaven.data.repository.FirebaseAuthRepository;
+import com.example.glimmerheaven.utils.Ratings.CalculateAverageRate;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
+import com.example.glimmerheaven.utils.callBacks.ResultMapCallBack;
 import com.example.glimmerheaven.utils.singleton.UserManage;
 
 import java.util.ArrayList;
@@ -58,7 +64,49 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         Product product = productList.get(position);
 
         holder.getTxt_productName().setText(product.getName());
-        holder.getTxt_price().setText(String.valueOf(product.getPrice()));
+        holder.getTxt_price().setText(String.valueOf(product.getPrice())+" LKR");
+
+        // Discount process
+        if(product.getDiscount() != null){
+            Discount discount = new ArrayList<Discount>(product.getDiscount().values()).get(0);
+            long startDate = discount.getStartDate();
+            long endDate = discount.getEndDate();
+            long currentDate = System.currentTimeMillis();
+            if(currentDate > startDate && currentDate < endDate){
+                holder.txt_price.setPaintFlags(holder.txt_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                double newPrice = product.getPrice()-(product.getPrice()*(discount.getRate()/100));
+                holder.txt_priceWithDiscount.setText(newPrice+"");
+                holder.txt_priceWithDiscount.setVisibility(View.VISIBLE);
+            }
+        }
+        // Rating manage
+        new CommentAndRatingRepository().getProductRelatedCommentsAndRatings(
+                id,
+                new ResultMapCallBack() {
+                    @Override
+                    public void onCompleted(Map result, boolean status, String message) {
+                        if(status){
+                            Map<String, CommentAndRating> commentsAndRatingMap = result;
+                            if(commentsAndRatingMap.size() != 0){
+                                float rateCount = commentsAndRatingMap.size();
+                                ArrayList<Float> ratings = new ArrayList<>();
+                                for(CommentAndRating ct : commentsAndRatingMap.values()){
+                                    ratings.add(ct.getRate());
+                                }
+                                float average = CalculateAverageRate.getRoundedAverage(rateCount,ratings);
+                                holder.ratingbar.setRating(average);
+                                holder.txt_ratingCount.setText("(reviews "+(int)rateCount+")");
+                            }else{
+                                holder.ratingbar.setRating(0);
+                                holder.txt_ratingCount.setText("(reviews "+0+")");
+                            }
+                        }else{
+                            holder.ratingbar.setRating(0);
+                            holder.txt_ratingCount.setText("(reviews "+0+")");
+                        }
+                    }
+                }
+        );
 
         // WishList Icon change
         if(currentUserWishList.contains(id)){
@@ -68,7 +116,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }
 
         // Cart Icon change
-
         if(!currentUserCart.isEmpty()){
             for(CartItem cartItem : currentUserCart){
                 if(cartItem.getProductId().equals(id)){
@@ -130,11 +177,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         holder.getImg_wishlist().setOnClickListener(view -> {
             if(currentUserWishList.contains(id)){
                 currentUserWishList.remove(id);
-                new CustomerRepository().updateWishList(new FirebaseAuthRepository().getCurrentUser().getUid(), currentUserWishList);
+                new CustomerRepository().updateWishList(new FirebaseAuthRepository().getCurrentUser().getUid(), currentUserWishList,null);
                 holder.getImg_wishlist().setImageResource(R.drawable.heart);
             }else{
                 currentUserWishList.add(id);
-                new CustomerRepository().updateWishList(new FirebaseAuthRepository().getCurrentUser().getUid(), currentUserWishList);
+                new CustomerRepository().updateWishList(new FirebaseAuthRepository().getCurrentUser().getUid(), currentUserWishList,null);
                 holder.getImg_wishlist().setImageResource(R.drawable.heart_red);
             }
         });
@@ -171,7 +218,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img_product,img_cart,img_wishlist;
-        private TextView txt_productName, txt_ratingCount,txt_price;
+        private TextView txt_productName, txt_ratingCount,txt_price,txt_priceWithDiscount;
         private RatingBar ratingbar;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -182,6 +229,15 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             txt_ratingCount = itemView.findViewById(R.id.txt_rating_count);
             txt_price = itemView.findViewById(R.id.txt_price_wishlist_item);
             ratingbar = itemView.findViewById(R.id.rating_bar);
+            txt_priceWithDiscount = itemView.findViewById(R.id.txt_totalpricewithdiscount_item);
+        }
+
+        public TextView getTxt_priceWithDiscount() {
+            return txt_priceWithDiscount;
+        }
+
+        public void setTxt_priceWithDiscount(TextView txt_priceWithDiscount) {
+            this.txt_priceWithDiscount = txt_priceWithDiscount;
         }
 
         public ImageView getImg_product() {

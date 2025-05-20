@@ -19,15 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.glimmerheaven.R;
 import com.example.glimmerheaven.data.model.CartItem;
+import com.example.glimmerheaven.data.model.CommentAndRating;
 import com.example.glimmerheaven.data.model.Discount;
 import com.example.glimmerheaven.data.model.Product;
+import com.example.glimmerheaven.data.repository.CommentAndRatingRepository;
 import com.example.glimmerheaven.data.repository.CustomerRepository;
 import com.example.glimmerheaven.data.repository.DiscountRepository;
 import com.example.glimmerheaven.data.repository.FirebaseAuthRepository;
 import com.example.glimmerheaven.data.repository.ProductRepository;
 import com.example.glimmerheaven.ui.viewmodel.CartViewModel;
+import com.example.glimmerheaven.utils.Ratings.CalculateAverageRate;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
 import com.example.glimmerheaven.utils.callBacks.ResultCallBack;
+import com.example.glimmerheaven.utils.callBacks.ResultMapCallBack;
 import com.example.glimmerheaven.utils.singleton.UserManage;
 
 import java.util.ArrayList;
@@ -74,11 +78,13 @@ public class CartItemListAdapter extends RecyclerView.Adapter<CartItemListAdapte
             if(product.getDiscount() != null){
                 Map<String,Discount> discount = product.getDiscount();
                 String discountID = new ArrayList<String>(discount.keySet()).get(0);
+
                 new DiscountRepository().getDiscount(discountID, new ResultCallBack() {
                     @Override
                     public void onDataComplete(Object keys, Object values, boolean status, String message) {
                         String dID = (String) keys;
                         Discount discount = (Discount) values;
+
                         long currentTime = System.currentTimeMillis();
                         if(currentTime > discount.getStartDate() && currentTime < discount.getEndDate()){
                             holder.txt_price.setPaintFlags(holder.txt_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -89,6 +95,35 @@ public class CartItemListAdapter extends RecyclerView.Adapter<CartItemListAdapte
                     }
                 });
             }
+
+            // Rating manage
+            new CommentAndRatingRepository().getProductRelatedCommentsAndRatings(
+                    cartItem.getProductId(),
+                    new ResultMapCallBack() {
+                        @Override
+                        public void onCompleted(Map result, boolean status, String message) {
+                            if(status){
+                                Map<String, CommentAndRating> commentsAndRatingMap = result;
+                                if(commentsAndRatingMap.size() != 0){
+                                    float rateCount = commentsAndRatingMap.size();
+                                    ArrayList<Float> ratings = new ArrayList<>();
+                                    for(CommentAndRating ct : commentsAndRatingMap.values()){
+                                        ratings.add(ct.getRate());
+                                    }
+                                    float average = CalculateAverageRate.getRoundedAverage(rateCount,ratings);
+                                    holder.rb_ratingBar.setRating(average);
+                                    holder.txt_review.setText("(reviews "+(int)rateCount+")");
+                                }else{
+                                    holder.rb_ratingBar.setRating(0);
+                                    holder.txt_review.setText("(reviews "+0+")");
+                                }
+                            }else{
+                                holder.rb_ratingBar.setRating(0);
+                                holder.txt_review.setText("(reviews "+0+")");
+                            }
+                        }
+                    }
+            );
 
             holder.img_plus.setOnClickListener(view -> {
                 if((cartItem.getQty()+1) <= product.getQty()){

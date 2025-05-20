@@ -16,5 +16,6 @@
     <color name="DialogButton2">#97A4E6</color>
     <color name="edit_text_background">#f6fbff</color>
     <color name="edit_text_background_line">#fa9701</color>
+    <color name="comment">#E6E2CB</color>
 
 </resources>

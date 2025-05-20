@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new TestCaseOne();
+        new TestCaseOne(this,this,this);
     }
 
 }

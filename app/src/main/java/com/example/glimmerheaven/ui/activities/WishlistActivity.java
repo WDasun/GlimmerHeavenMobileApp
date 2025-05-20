@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -32,6 +33,7 @@ public class WishlistActivity extends AppCompatActivity {
     private WishListViewModel wishListViewModel;
     private Context context;
     private WishlistAdapter wishlistAdapter;
+    private LifecycleOwner lifecycleOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class WishlistActivity extends AppCompatActivity {
             return insets;
         });
 
+        lifecycleOwner = this;
         wishListViewModel = new ViewModelProvider(this).get(WishListViewModel.class);
         context = this;
 
@@ -55,9 +58,9 @@ public class WishlistActivity extends AppCompatActivity {
 
                 recyclerView = findViewById(R.id.recyW_wishlist);
                 if(productMap != null){
-                    wishlistAdapter = new WishlistAdapter(new ArrayList<>(productMap.keySet()), new ArrayList<>(productMap.values()));
+                    wishlistAdapter = new WishlistAdapter(context,lifecycleOwner,new ArrayList<>(productMap.keySet()), new ArrayList<>(productMap.values()));
                 }else{
-                    wishlistAdapter = new WishlistAdapter(new ArrayList<>(), new ArrayList<>());
+                    wishlistAdapter = new WishlistAdapter(context,lifecycleOwner,new ArrayList<>(), new ArrayList<>());
                 }
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 2);
 

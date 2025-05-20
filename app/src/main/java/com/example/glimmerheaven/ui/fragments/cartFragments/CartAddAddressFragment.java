@@ -1,6 +1,7 @@
 package com.example.glimmerheaven.ui.fragments.cartFragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.glimmerheaven.R;
 import com.example.glimmerheaven.data.model.Address;
+import com.example.glimmerheaven.data.model.CartItem;
+import com.example.glimmerheaven.data.model.PreOrder;
 import com.example.glimmerheaven.data.repository.CustomerRepository;
 import com.example.glimmerheaven.ui.viewmodel.CartViewModel;
 import com.example.glimmerheaven.utils.callBacks.MessageCallBack;
@@ -31,6 +34,13 @@ public class CartAddAddressFragment extends Fragment {
     private ImageView img_stepTwo,img_selectAddressBack;
     private LinearLayout lyr_addressList;
     private CartViewModel cartViewModel;
+    private Fragment fragment;
+    private Bundle bundle;
+
+    public CartAddAddressFragment() {
+        super(R.layout.fragment_cart_add_address);
+    }
+
     public CartAddAddressFragment(TextView textLineToAddress, ImageView img_stepTwo) {
         super(R.layout.fragment_cart_add_address);
         this.textLineToAddress = textLineToAddress;
@@ -41,8 +51,14 @@ public class CartAddAddressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        bundle = getArguments();
+        fragment = getParentFragment();
         fragmentManager = getParentFragmentManager();
-        cartViewModel = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        if(fragment != null){
+            cartViewModel = new ViewModelProvider(getParentFragment()).get(CartViewModel.class);
+        }else{
+            cartViewModel = new ViewModelProvider(getActivity()).get(CartViewModel.class);
+        }
 
         btn_addNewAddress = view.findViewById(R.id.txt_add_new_address_cartaddress);
         img_selectAddressBack = view.findViewById(R.id.img_select_address_back);
@@ -53,9 +69,23 @@ public class CartAddAddressFragment extends Fragment {
         txt_district = view.findViewById(R.id.txt_district_cartaddaddress);
         txt_villageOrTown = view.findViewById(R.id.txt_address_villageortown_cartaddaddress);
 
+        if(bundle != null){
+            cartViewModel.setFragmentContainerId(bundle.getInt("fcid"));
+            PreOrder preOrder = cartViewModel.getPreOrder();
+            cartViewModel.getPreOrder().getSelectedCartItemList().add(new CartItem(
+                    bundle.getString("pid"),
+                    bundle.getInt("qty")
+            ));
+        }else{
+            cartViewModel.setFragmentContainerId(R.id.fragment_container_cart);
+        }
+
+
         // Changing cart process navigation colors
-        img_stepTwo.setBackgroundResource(R.drawable.full_round_cart_nav_number_pass);
-        textLineToAddress.setTextColor(view.getResources().getColor(R.color.cat_status_changing));
+        if(textLineToAddress != null){
+            img_stepTwo.setBackgroundResource(R.drawable.full_round_cart_nav_number_pass);
+            textLineToAddress.setTextColor(view.getResources().getColor(R.color.cat_status_changing));
+        }
 
         // Load addresses and set listeners
         UserManage.getInstance().getCurrentUser().observe(getViewLifecycleOwner(), customer -> {
@@ -111,7 +141,11 @@ public class CartAddAddressFragment extends Fragment {
         img_selectAddressBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentManager.popBackStack();
+                if(fragment != null){
+                    fragmentManager.popBackStack();
+                }else{
+                    getActivity().onBackPressed();
+                }
             }
         });
     }
@@ -119,18 +153,22 @@ public class CartAddAddressFragment extends Fragment {
     private void moveToCartPayment(){
         Fragment cartPaymentFragment = fragmentManager.findFragmentByTag("CartPaymentFragment");
         if(cartPaymentFragment == null){
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_cart, CartPaymentFragment.class, null)
-                    .setReorderingAllowed(true)
-                    .addToBackStack(null)
-                    .commit();
+            if(cartViewModel.getFragmentContainerId() != 0){
+                fragmentManager.beginTransaction()
+                        .replace(cartViewModel.getFragmentContainerId(), CartPaymentFragment.class, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        img_stepTwo.setBackgroundResource(R.drawable.full_round_cart_nav_number);
-        textLineToAddress.setTextColor(getResources().getColor(R.color.cat_status_default));
+        if(textLineToAddress != null){
+            img_stepTwo.setBackgroundResource(R.drawable.full_round_cart_nav_number);
+            textLineToAddress.setTextColor(getResources().getColor(R.color.cat_status_default));
+        }
     }
 }

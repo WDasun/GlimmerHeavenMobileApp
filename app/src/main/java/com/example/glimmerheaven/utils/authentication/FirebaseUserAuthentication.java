@@ -26,6 +26,7 @@ public class FirebaseUserAuthentication {
     public void Authenticate(){
         FirebaseUser user = new FirebaseAuthRepository().getCurrentUser();
         if(user == null){
+            Log.v("ats6", "user null");
             Intent intent = new Intent(context, SignIn.class);
             context.startActivity(intent);
             if (context instanceof android.app.Activity) {
@@ -34,6 +35,8 @@ public class FirebaseUserAuthentication {
 
         }else{
             // Setting customer as current user for future use
+            Log.v("ats6", "user not null");
+            Log.v("ats6", "uid : "+user.getUid());
             UserManage.getInstance().setCurrentUser(user.getUid(), (status, message) -> {
                 if(status){
                     // Notification manage
